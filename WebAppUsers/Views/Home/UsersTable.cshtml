@@ -1,0 +1,277 @@
+﻿
+
+@model List<WebAppUsers.Models.User>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://kit.fontawesome.com/7a8b5cb27d.js" crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<h2></h2>
+<br />
+<h2></h2>
+<br />
+<h2></h2>
+<br />
+
+<div class=" active">
+
+    <button class="btn btn-outline-dark" id="button_del" data-toggle="tooltip" title="Delete User" style="margin:20px;">
+        <span class="fas fa-user-times" style="font-size:30px"></span>
+
+    </button>
+
+    <button class="btn btn-outline-dark" id="button_lock" data-toggle="tooltip" title="Block User" style="margin:20px;">
+        <span class="fas fa-lock" style="font-size:30px"></span>
+
+    </button>
+
+    <button class="btn btn-outline-dark" id="button_unlock" data-toggle="tooltip" title="Unblock User" style="margin:20px;">
+        <span class="fas fa-lock-open" style="font-size:30px"></span>
+
+    </button>
+
+
+    <button class="btn btn-outline-dark" id="button_logout" data-toggle="tooltip" title="Logout" style="margin:20px;">
+        <span class="fas fa-sign-out-alt" style="font-size:30px"></span>
+
+    </button>
+
+</div>
+
+
+<h2></h2>
+
+
+<table class="table table-hover table-bordered">
+
+    <tr>
+        <thread>
+            <th>
+                <label class="text-success"><input type="checkbox" id="checkbox"></label>
+            </th>
+            <th>Status</th>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Registration Date
+            </th>
+            <th>
+                Last Login in  Date
+            </th>
+        </thread>
+    </tr>
+    <tbody id="controls">
+
+        @foreach (var user in Model)
+        {
+
+            <tr>
+
+                <td><label><input type="checkbox" name="uid" value="@user.Id"></label></td>
+
+
+                @if (user.LockoutEnabled)
+                {
+                    <td class="bg-success">unblock</td>
+                    <td>@user.Id</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.RegistrationDate</td>
+                    <td>@user.LastLoginingDate</td>
+                }
+                else
+                {
+                    <td class="bg-danger">block</td>
+                    <td>@user.Id</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.RegistrationDate</td>
+                    <td>@user.LastLoginingDate</td>
+                }
+
+
+
+
+            </tr>
+
+
+        }
+
+
+    </tbody>
+</table>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://snipp.ru/cdn/bootstrap/4.3/bootstrap.min.css">
+<script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+
+<script>
+    $('#checkbox').click(function () {
+        if ($(this).is(':checked')) {
+            $('#controls input:checkbox').prop('checked', true);
+        } else {
+            $('#controls input:checkbox').prop('checked', false);
+        }
+    });
+
+
+    
+
+    $("#button_lock").click(function () {
+
+        var checked = [];
+        $('input:checkbox:checked').each(function () {
+            checked.push($(this).val());
+        });
+
+        var formData = [];
+        formData.push("Blocked");
+         checked.forEach((element) => {
+             formData.push(element);
+        })
+
+       $.ajax({
+            type: 'POST',
+
+            url: '@Url.Action("ChangeData", "Accaunt")',
+            cache: false,
+
+           data: {
+               formData
+
+           },
+            success: function (data) {
+                document.location.reload(true)
+
+            },
+            error: function (data) {
+                alert("Error " + data.responseText);
+            }
+        });
+
+    });
+
+
+
+    $("#button_unlock").click(function () {
+
+        var checked = [];
+        $('input:checkbox:checked').each(function () {
+            checked.push($(this).val());
+        });
+
+        var formData = [];
+        formData.push("UnBlocked");
+         checked.forEach((element) => {
+             formData.push(element);
+        })
+
+       $.ajax({
+            type: 'POST',
+
+            url: '@Url.Action("ChangeData", "Accaunt")',
+            cache: false,
+
+           data: {
+               formData
+
+           },
+            success: function (data) {
+                document.location.reload(true)
+            },
+            error: function (data) {
+                alert("Error " + data.responseText);
+            }
+        });
+
+    });
+
+    $("#button_del").click(function () {
+
+        var checked = [];
+        $('input:checkbox:checked').each(function () {
+            checked.push($(this).val());
+        });
+
+        var formData = [];
+        formData.push("Delete");
+         checked.forEach((element) => {
+             formData.push(element);
+        })
+
+       $.ajax({
+            type: 'POST',
+
+            url: '@Url.Action("ChangeData", "Accaunt")',
+            cache: false,
+
+           data: {
+               formData
+
+           },
+            success: function (data) {
+                document.location.reload(true)
+            },
+            error: function (data) {
+                alert("Error " + data.responseText);
+            }
+        });
+
+    });
+
+   $("#button_logout").click(function () {
+
+        
+        var formData = [];
+        formData.push("Logout");
+
+       $.ajax({
+            type: 'POST',
+
+            url: '@Url.Action("ChangeData", "Accaunt")',
+            cache: false,
+
+           data: {
+               formData
+
+           },
+            success: function (data) {
+                document.location.reload(true)
+            },
+            error: function (data) {
+                alert("Error " + data.responseText);
+            }
+        });
+
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
