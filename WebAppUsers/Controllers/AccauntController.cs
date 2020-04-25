@@ -154,10 +154,10 @@ namespace WebAppUsers.Controllers
 
                 await BlockedUserAsync(formData);
                 var result  = _userManager.FindByNameAsync(User.Identity.Name);
-                if (Array.IndexOf(formData,result.Result.Id ) == -1)
+                if (Array.IndexOf(formData,result.Result.Id ) != -1)
                 {
-                    
-                    AccaunLogin = "";
+
+                    _ = LogoutAsync();
                 }
                 return Ok();
 
@@ -170,15 +170,18 @@ namespace WebAppUsers.Controllers
             }
             else if (formData[0] == "Delete")
             {
-                _ = await DeleteUser(formData);
                 var result = _userManager.FindByNameAsync(User.Identity.Name);
-                if (Array.IndexOf(formData, result.Result.Id) == -1)
+                if (Array.IndexOf(formData, result.Result.Id) != -1)
                 {
 
-                    //_ = LogoutAsync();
-                    AccaunLogin = "";
+                    _ = LogoutAsync();
+                   
 
                 }
+
+
+                _ = await DeleteUser(formData);
+                
                 return Ok();
 
             }
