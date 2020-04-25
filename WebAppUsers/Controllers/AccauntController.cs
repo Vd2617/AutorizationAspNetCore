@@ -27,7 +27,7 @@ namespace WebAppUsers.Controllers
 
 
 
-        public async Task<Microsoft.AspNetCore.Identity.IdentityResult> UpdateAccauntLastLoginDate(LoginViewModel model)
+        public async Task<IdentityResult> UpdateAccauntLastLoginDate(LoginViewModel model)
         {
 
             User user = await _userManager.FindByNameAsync(model.Name);
@@ -91,11 +91,7 @@ namespace WebAppUsers.Controllers
               
               
 
-                if (!checkuser.LockoutEnabled)
-                {
-                    await _signInManager.SignOutAsync();
-                    return RedirectToAction("Login", "Accaunt");
-                }
+              
 
                 if (result.Succeeded)
                 {
@@ -174,13 +170,14 @@ namespace WebAppUsers.Controllers
             }
             else if (formData[0] == "Delete")
             {
-                DeleteUser(formData);
+                _ = await DeleteUser(formData);
                 var result = _userManager.FindByNameAsync(User.Identity.Name);
                 if (Array.IndexOf(formData, result.Result.Id) == -1)
                 {
-                    
-                    _ = LogoutAsync();
-                   
+
+                    //_ = LogoutAsync();
+                    AccaunLogin = "";
+
                 }
                 return Ok();
 
@@ -227,7 +224,7 @@ namespace WebAppUsers.Controllers
             return Ok();
         }
 
-        public IActionResult DeleteUser(string[] userid)
+        public async Task<IActionResult>  DeleteUser(string[] userid)
         {
             foreach (var id in userid)
             {
@@ -235,7 +232,7 @@ namespace WebAppUsers.Controllers
                 if (user.Result == null)
                     continue;
 
-                _ = _userManager.DeleteAsync(user.Result);
+                await  _userManager.DeleteAsync(user.Result);
             }
             return Ok();
         }
